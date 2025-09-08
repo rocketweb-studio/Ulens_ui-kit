@@ -10,7 +10,7 @@ type Props = {
   recaptchaToken: string
 }
 
-const ReCaptcha = ({ errorMessage, setCaptcha, recaptchaToken }: Props) => {
+export const ReCaptcha = ({ errorMessage, setCaptcha, recaptchaToken }: Props) => {
   const [error, setError] = useState<string | boolean>('')
   const [loader, setLoader] = useState<'checkbox' | 'loading' | 'complete'>('checkbox')
 
@@ -87,5 +87,3 @@ const ReCaptcha = ({ errorMessage, setCaptcha, recaptchaToken }: Props) => {
     </>
   )
 }
-
-export default ReCaptcha

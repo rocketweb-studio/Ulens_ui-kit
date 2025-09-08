@@ -1,2 +1,2 @@
-export * from './Button/Button'
-export * from './ReCaptcha/ReCaptcha'
+export * from './Button'
+export * from './ReCaptcha'
