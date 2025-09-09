@@ -1,0 +1,6 @@
+import type { SVGProps } from "react";
+import { Ref, forwardRef, memo } from "react";
+const SvgIconOutlineBell = (props: SVGProps<SVGSVGElement>, ref: Ref<SVGSVGElement>) => <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="currentColor" ref={ref} {...props}><path fill="currentColor" fillRule="evenodd" d="m5.515 15.999 1.18-1.182c.378-.378.586-.88.586-1.414V8.726c0-1.357.59-2.654 1.62-3.556a4.66 4.66 0 0 1 3.737-1.13c2.327.31 4.082 2.414 4.082 4.896v4.467c0 .534.208 1.036.585 1.413l1.181 1.183zM14 18.339c0 .9-.916 1.66-2 1.66s-2-.76-2-1.66V18h4zm6.521-3.132-1.8-1.804V8.936c0-3.481-2.503-6.438-5.82-6.877a6.72 6.72 0 0 0-5.318 1.607 6.73 6.73 0 0 0-2.302 5.06v4.677l-1.802 1.804a1.63 1.63 0 0 0-.354 1.782c.255.614.848 1.01 1.512 1.01H8v.34C8 20.359 9.794 22 12 22s4-1.641 4-3.66V18h3.363c.664 0 1.256-.396 1.51-1.01a1.63 1.63 0 0 0-.352-1.782" clipRule="evenodd" /></svg>;
+const ForwardRef = forwardRef(SvgIconOutlineBell);
+const Memo = memo(ForwardRef);
+export default Memo;
