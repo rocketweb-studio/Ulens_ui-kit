@@ -1,0 +1,61 @@
+@use '../../styles/_colors' as colors;
+@use '../../styles/_typography' as typography;
+
+.paginationContainer {
+  @include typography.regular_text_14;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background-color: colors.color(dark, 700);
+  color: #d5dae0;
+
+
+  & button {
+    width: 24px;
+    height: 24px;
+    background-color: transparent;
+    border: none;
+    color: colors.color(light, 100);;
+    cursor: pointer;
+  }
+
+  & span  {
+    color: colors.color(light, 100);
+  }
+
+  & select {
+    color: colors.color(light, 100);
+    border: 1px solid colors.color(dark, 300);
+    background-color: colors.color(dark, 500);
+    border-radius: 2px;
+    padding: 0 2px 0 6px;
+    width: 52px;
+    height: 24px;
+    margin: 0 5px;
+    outline: none;
+  }
+}
+
+button.arrow {
+  font-weight: 600;
+  transform: scale(0.7, 1.3);
+}
+
+button.arrowDisabled {
+ color: colors.color(dark, 100);;
+}
+
+.dot {
+  text-align: center;
+  width: 24px;
+}
+
+button.active {
+  border-radius: 2px;
+  background-color: colors.color(light, 100);
+  color: colors.color(dark, 900);
+}
+
+.pageSizeContainer {
+ margin-left: 12px;
+}
