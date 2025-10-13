@@ -1,9 +1,8 @@
 'use client'
 
 import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react'
-import styles from '@/src/shared/ui/Input/Input.module.scss'
-import eyeOnSvg from '@/public/eye-outline.svg'
-import eyeOffSvg from '@/public/eye-off-outline.svg'
+import styles from './Input.module.scss'
+import {IconEye, IconEyeOff} from "../../assets/icons/components";
 
 type Props<T extends FieldValues> = {
   type?: string
@@ -120,12 +119,7 @@ export const Input = <T extends FieldValues>({
             onClick={() => setShowPassword(!showPassword)}
             disabled={disabled}
           >
-            <Image
-              src={showPassword ? eyeOnSvg : eyeOffSvg}
-              alt={showPassword ? 'Hide' : 'Show'}
-              width={24}
-              height={24}
-            />
+            {showPassword ? <IconEyeOff width={24} height={24}/> : <IconEye width={24} height={24}/>}
           </button>
         )}
       </div>
