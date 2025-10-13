@@ -1,15 +1,76 @@
-import s from './Button.module.scss';
-import type {ComponentPropsWithoutRef} from "react";
+import React, { ButtonHTMLAttributes } from 'react'
+import styles from './Button.module.scss'
 
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'text' | 'text-white' | 'in-text'
+export type ButtonSize = 'small' | 'medium' | 'large' | 'inherit'
+export type TagType = 'button' | 'link'
 
 type Props = {
-  variant?: 'primary' | 'secondary' | 'outlined' | 'text';
+  tagType?: TagType
+  path?: string
+  variant?: ButtonVariant
+  size?: ButtonSize
+  fullWidth?: boolean
+  isLoading?: boolean
+  leftIcon?: React.ReactNode
+  rightIcon?: React.ReactNode
+  underlineText?: boolean
+  withoutPadding?: boolean
+} & ButtonHTMLAttributes<HTMLButtonElement>
 
-} & ComponentPropsWithoutRef<'button'>;
+export const Button = ({
+                         children,
+                         tagType = 'button',
+                         path = '/',
+                         variant = 'primary',
+                         size = 'medium',
+                         fullWidth = false,
+                         isLoading = false,
+                         disabled = false,
+                         leftIcon,
+                         rightIcon,
+                         underlineText = false,
+                         className = '',
+                         withoutPadding = false,
+                         ...props
+                       }: Props) => {
+  const buttonClasses = [
+    styles.button,
+    styles[`variant-${variant}`],
+    styles[`size-${size}`],
+    fullWidth && styles.fullWidth,
+    isLoading && styles.loading,
+    underlineText && styles.underline,
+    withoutPadding && styles.withoutPadding,
+    className,
+  ]
+      .filter(Boolean)
+      .join(' ')
 
-export const Button = ({variant = 'primary', className, ...rest}: Props) => {
+
+  const content = (
+      <>
+        {leftIcon && <span className={styles.leftIcon}>{leftIcon}</span>}
+        {children}
+        {rightIcon && <span className={styles.rightIcon}>{rightIcon}</span>}
+        {isLoading && <span className={styles.loader}>Loading...</span>}
+      </>
+  )
+
+  if (tagType === 'link') {
+    return (
+        <Link href={path} className={buttonClasses} aria-disabled={disabled || isLoading}>
+          {content}
+        </Link>
+    )
+  }
 
   return (
-    <button {...rest} className={`${s[variant]} ${className? className : ''}`}>Button    </button>
-  );
-};
+      <button className={buttonClasses} disabled={disabled || isLoading} aria-busy={isLoading} {...props}>
+        {leftIcon && <span className={styles.leftIcon}>{leftIcon}</span>}
+        {children}
+        {rightIcon && <span className={styles.rightIcon}>{rightIcon}</span>}
+        {isLoading && <span className={styles.loader}>Loading...</span>}
+      </button>
+  )
+}
