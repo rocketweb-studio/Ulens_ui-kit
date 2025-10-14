@@ -32,7 +32,7 @@ export const Pagination = ({onPageChange, elementCount}: Props) => {
   }
   const setPageSizeHandler = (pageSize: number) => {
     setPageSize(pageSize)
-
+    setPage(1)
   }
 
 
@@ -74,8 +74,8 @@ export const Pagination = ({onPageChange, elementCount}: Props) => {
 
       {end < totalPage - 1 && <span className={s.dot}>...</span>}
 
-      <button onClick={() => setPageHandler(totalPage)}
-              className={`${page === totalPage ? s.active : ''}`}>{totalPage}</button>
+      {totalPage > 1 && <button onClick={() => setPageHandler(totalPage)}
+               className={`${page === totalPage ? s.active : ''}`}>{totalPage}</button>}
 
       <button onClick={nextPageHandler}
               className={`${s.arrow} ${page === totalPage ? s.arrowDisabled : ''}`}> {'>'} </button>
