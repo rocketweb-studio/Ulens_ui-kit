@@ -8,15 +8,32 @@
   align-items: center;
   background-color: colors.color(dark, 700);
   color: #d5dae0;
-
+  overflow: hidden;
 
   & button {
+    display: block;
     width: 24px;
     height: 24px;
     background-color: transparent;
     border: none;
     color: colors.color(light, 100);;
     cursor: pointer;
+    padding: 0;
+
+
+    &:hover {
+      width: 24px;
+      height: 24px;
+      overflow: clip;
+      background-color: colors.color(dark, 500);
+      transition: 0.2s ease;
+    }
+
+    &:focus-visible {
+      outline: none;
+      border: 2px solid colors.color(accent, 500);
+      border-radius: 2px;
+    }
   }
 
   & span  {
@@ -50,7 +67,7 @@ button.arrowDisabled {
   width: 24px;
 }
 
-button.active {
+button.active, button.active:hover {
   border-radius: 2px;
   background-color: colors.color(light, 100);
   color: colors.color(dark, 900);
