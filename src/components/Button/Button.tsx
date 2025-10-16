@@ -1,10 +1,10 @@
 import s from './Button.module.scss';
 import {ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode} from 'react'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'text' | 'text-white' | 'in-text' | 'darken'
-export type ButtonSize = 'small' | 'medium' | 'large' | 'inherit'
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'text' | 'text-white' | 'in-text' | 'darken'
+type ButtonSize = 'small' | 'medium' | 'large' | 'inherit'
 
-export interface BaseButtonProps {
+type BaseButtonProps = {
     variant?: ButtonVariant
     size?: ButtonSize
     fullWidth?: boolean
@@ -19,20 +19,20 @@ export interface BaseButtonProps {
     children?: ReactNode
 }
 
-interface LinkSpecificProps {
+type LinkSpecificProps = {
     href?: string
     path?: string
 }
 
-export interface ButtonProps extends BaseButtonProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
+type ButtonProps = BaseButtonProps & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> & {
     tagType?: 'button'
 }
 
-export interface LinkButtonProps extends BaseButtonProps, Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'className' | 'href'>, LinkSpecificProps {
+type LinkButtonProps = BaseButtonProps & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'className' | 'href'> & LinkSpecificProps & {
     tagType: 'link'
 }
 
-export type UniversalButtonProps = ButtonProps | LinkButtonProps
+type UniversalButtonProps = ButtonProps | LinkButtonProps
 
 export const Button = (props: UniversalButtonProps) => {
     const {
