@@ -1,7 +1,11 @@
 import type { Preview } from '@storybook/react-vite'
+import {WithReactHookForm} from "./decorators";
 
 const preview: Preview = {
   parameters: {
+    backgrounds: {
+      default: 'dark'
+    },
     controls: {
       matchers: {
        color: /(background|color)$/i,
@@ -16,6 +20,7 @@ const preview: Preview = {
       test: 'todo'
     }
   },
+  decorators: [WithReactHookForm],
 };
 
 export default preview;

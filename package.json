@@ -1,7 +1,7 @@
 {
   "name": "@rocketweb-studio/ulens-ui-kit",
   "private": false,
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -21,7 +21,8 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.65.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "4.1.1",
