@@ -1,0 +1,64 @@
+@use '../../styles/_typography' as typography;
+@use '../../styles/_colors' as colors;
+
+.sidebarWrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 220px;
+  padding: 70px 0 35px 60px;
+  border-right: 1px solid colors.color(dark, 300);
+  flex-shrink: 0;
+  background-color: #2e2d2d;
+  box-sizing: border-box;
+
+  .linkWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .linkWrapper:nth-child(5) {
+    margin-bottom: 60px;
+  }
+
+  .linkWrapper:nth-child(7) {
+    margin-bottom: 180px;
+  }
+}
+
+.link {
+  @include typography.regular-text-14;
+  color: #fff;
+  text-decoration: none;
+  margin-bottom: 10px;
+
+  &:hover {
+    @include typography.medium_text_14;
+    color: colors.color(accent, 500);
+  }
+
+
+  &:focus-visible{
+    outline: none;
+    border: 2px solid colors.color(accent, 700);
+    border-radius: 2px;
+  }
+
+  &:disabled {
+    color: colors.color(dark, 100);
+  }
+
+}
+
+.icon {
+  margin-right: 12px;
+  display: inline-block;
+  vertical-align: -5px;
+}
+
+.activeLink, .activeLink:visited {
+  @include typography.bold_text_14;
+  color: colors.color(accent, 500);
+}
