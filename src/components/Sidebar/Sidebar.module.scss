@@ -2,7 +2,6 @@
 @use '../../styles/_colors' as colors;
 
 .sidebarWrapper {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 25px;
@@ -10,7 +9,6 @@
   padding: 70px 0 35px 60px;
   border-right: 1px solid colors.color(dark, 300);
   flex-shrink: 0;
-  background-color: #2e2d2d;
   box-sizing: border-box;
 
   .linkWrapper {

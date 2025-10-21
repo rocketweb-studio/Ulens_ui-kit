@@ -1,7 +1,7 @@
 'use client'
 
 import s from './Sidebar.module.scss'
-import {ElementType, NamedExoticComponent, ReactNode, RefAttributes, SVGProps} from "react";
+import {ElementType, NamedExoticComponent, RefAttributes, SVGProps} from "react";
 
 type Props = {
   sidebarLinks: {
@@ -10,19 +10,11 @@ type Props = {
     href: string
     isActive: boolean
   }[]
-  LinkComponent: ElementType<{
-    href?: string // для Next.js Link и <a>
-    to?: string   // для React Router
-    className?: string
-    children?: ReactNode
-  }>
+  LinkComponent: ElementType
 }
 
 export const Sidebar = ({sidebarLinks, LinkComponent}: Props) => {
-
-
-
-
+  
   return (
     <div className={s.sidebarWrapper}>
       {sidebarLinks.map(({ title, href, isActive, icon: Icon }, i) => (
