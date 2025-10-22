@@ -1,0 +1,2 @@
+export { CustomSwiper } from './CustomSwiper'
+
