@@ -1,7 +1,8 @@
 import React from 'react';
-import type {Meta, StoryObj} from '@storybook/react';
-import {CustomSwiper} from './CustomSwiper';
-import {TSlide} from './types';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { CustomSwiper } from './CustomSwiper';
+import { TSlide } from './types';
+import type { Swiper as SwiperType } from 'swiper';
 import './CustomSwiper.module.scss';
 
 const meta: Meta<typeof CustomSwiper> = {
@@ -25,7 +26,7 @@ export default meta;
 type Story = StoryObj<typeof CustomSwiper>;
 
 // Демо-контент для слайдов
-const SlideContent: React.FC<{ number: number; color: string; text: string }> = ({number, color, text}) => (
+const SlideContent: React.FC<{ number: number; color: string; text: string }> = ({ number, color, text }) => (
     <div
         style={{
             height: '300px',
@@ -41,7 +42,7 @@ const SlideContent: React.FC<{ number: number; color: string; text: string }> = 
         }}
     >
         <div>Слайд {number}</div>
-        <div style={{fontSize: '16px', marginTop: '10px', fontWeight: 'normal'}}>{text}</div>
+        <div style={{ fontSize: '16px', marginTop: '10px', fontWeight: 'normal' }}>{text}</div>
     </div>
 );
 
@@ -49,19 +50,19 @@ const SlideContent: React.FC<{ number: number; color: string; text: string }> = 
 const baseSlides: TSlide[] = [
     {
         id: '1',
-        content: <SlideContent number={1} color="#007bff" text="Первый слайд"/>,
+        content: <SlideContent number={1} color="#007bff" text="Первый слайд" />,
     },
     {
         id: '2',
-        content: <SlideContent number={2} color="#28a745" text="Второй слайд"/>,
+        content: <SlideContent number={2} color="#28a745" text="Второй слайд" />,
     },
     {
         id: '3',
-        content: <SlideContent number={3} color="#dc3545" text="Третий слайд"/>,
+        content: <SlideContent number={3} color="#dc3545" text="Третий слайд" />,
     },
     {
         id: '4',
-        content: <SlideContent number={4} color="#ffc107" text="Четвертый слайд"/>,
+        content: <SlideContent number={4} color="#ffc107" text="Четвертый слайд" />,
     },
 ];
 
@@ -173,7 +174,7 @@ export const CustomAutoplayDelay: Story = {
         slides: baseSlides,
         navigation: true,
         pagination: true,
-        autoplay: {delay: 5000},
+        autoplay: { delay: 5000 },
         allowTouchMove: false,
     },
 };
@@ -193,15 +194,15 @@ export const ManySlides: Story = {
             ...baseSlides,
             {
                 id: '5',
-                content: <SlideContent number={5} color="#6f42c1" text="Пятый слайд"/>,
+                content: <SlideContent number={5} color="#6f42c1" text="Пятый слайд" />,
             },
             {
                 id: '6',
-                content: <SlideContent number={6} color="#e83e8c" text="Шестой слайд"/>,
+                content: <SlideContent number={6} color="#e83e8c" text="Шестой слайд" />,
             },
             {
                 id: '7',
-                content: <SlideContent number={7} color="#fd7e14" text="Седьмой слайд"/>,
+                content: <SlideContent number={7} color="#fd7e14" text="Седьмой слайд" />,
             },
         ],
         navigation: true,
@@ -239,7 +240,7 @@ export const ComplexContent: Story = {
             {
                 id: 'complex1',
                 content: (
-                    <div style={{padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px'}}>
+                    <div style={{ padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
                         <h3>Карточка продукта</h3>
                         <p>Описание продукта с подробной информацией и характеристиками.</p>
                         <button style={{
@@ -257,15 +258,15 @@ export const ComplexContent: Story = {
             {
                 id: 'complex2',
                 content: (
-                    <div style={{padding: '20px', backgroundColor: '#e9ecef', borderRadius: '8px'}}>
+                    <div style={{ padding: '20px', backgroundColor: '#e9ecef', borderRadius: '8px' }}>
                         <h3>Статистика</h3>
-                        <div style={{display: 'flex', gap: '10px', marginTop: '10px'}}>
-                            <div style={{flex: 1, padding: '10px', backgroundColor: 'white', borderRadius: '4px'}}>
-                                <div style={{fontSize: '24px', fontWeight: 'bold'}}>95%</div>
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                            <div style={{ flex: 1, padding: '10px', backgroundColor: 'white', borderRadius: '4px' }}>
+                                <div style={{ fontSize: '24px', fontWeight: 'bold' }}>95%</div>
                                 <div>Эффективность</div>
                             </div>
-                            <div style={{flex: 1, padding: '10px', backgroundColor: 'white', borderRadius: '4px'}}>
-                                <div style={{fontSize: '24px', fontWeight: 'bold'}}>1.2k</div>
+                            <div style={{ flex: 1, padding: '10px', backgroundColor: 'white', borderRadius: '4px' }}>
+                                <div style={{ fontSize: '24px', fontWeight: 'bold' }}>1.2k</div>
                                 <div>Пользователей</div>
                             </div>
                         </div>
@@ -275,12 +276,12 @@ export const ComplexContent: Story = {
             {
                 id: 'complex3',
                 content: (
-                    <div style={{padding: '20px', backgroundColor: '#dee2e6', borderRadius: '8px'}}>
+                    <div style={{ padding: '20px', backgroundColor: '#dee2e6', borderRadius: '8px' }}>
                         <h3>Отзывы</h3>
-                        <div style={{fontStyle: 'italic', marginTop: '10px'}}>
+                        <div style={{ fontStyle: 'italic', marginTop: '10px' }}>
                             "Отличный продукт! Очень помог в работе и значительно ускорил процессы."
                         </div>
-                        <div style={{marginTop: '10px', fontWeight: 'bold'}}> — Иван Петров</div>
+                        <div style={{ marginTop: '10px', fontWeight: 'bold' }}> — Иван Петров</div>
                     </div>
                 ),
             },
@@ -307,9 +308,9 @@ export const Playground: Story = {
 export const AllStates: Story = {
     render: () => {
         return (
-            <div style={{display: 'flex', flexDirection: 'column', gap: '40px'}}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
                 <div>
-                    <h3 style={{marginBottom: '16px'}}>Базовый слайдер</h3>
+                    <h3 style={{ marginBottom: '16px' }}>Базовый слайдер</h3>
                     <CustomSwiper
                         slides={baseSlides}
                         navigation={true}
@@ -319,7 +320,7 @@ export const AllStates: Story = {
                 </div>
 
                 <div>
-                    <h3 style={{marginBottom: '16px'}}>С автопрокруткой</h3>
+                    <h3 style={{ marginBottom: '16px' }}>С автопрокруткой</h3>
                     <CustomSwiper
                         slides={imageSlides}
                         navigation={true}
@@ -330,7 +331,7 @@ export const AllStates: Story = {
                 </div>
 
                 <div>
-                    <h3 style={{marginBottom: '16px'}}>Без навигации</h3>
+                    <h3 style={{ marginBottom: '16px' }}>Без навигации</h3>
                     <CustomSwiper
                         slides={baseSlides}
                         navigation={false}
@@ -340,7 +341,7 @@ export const AllStates: Story = {
                 </div>
 
                 <div>
-                    <h3 style={{marginBottom: '16px'}}>Без пагинации</h3>
+                    <h3 style={{ marginBottom: '16px' }}>Без пагинации</h3>
                     <CustomSwiper
                         slides={baseSlides}
                         navigation={true}
@@ -350,7 +351,7 @@ export const AllStates: Story = {
                 </div>
 
                 <div>
-                    <h3 style={{marginBottom: '16px'}}>Один слайд</h3>
+                    <h3 style={{ marginBottom: '16px' }}>Один слайд</h3>
                     <CustomSwiper
                         slides={[baseSlides[0]]}
                         navigation={false}
@@ -366,7 +367,7 @@ export const AllStates: Story = {
 // Story с обработчиком изменения слайда
 export const WithSlideChangeHandler: Story = {
     render: (args) => {
-        const handleSlideChange = (swiper: any) => {
+        const handleSlideChange = (swiper: SwiperType) => {
             console.log('Active slide changed to:', swiper.activeIndex);
         };
 

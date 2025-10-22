@@ -1,4 +1,3 @@
-import React from 'react'
 import styles from './CustomSwiper.module.scss'
 import type { TNavigationButtonsProps } from './types'
 

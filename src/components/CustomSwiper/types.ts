@@ -1,21 +1,23 @@
 import { ReactNode } from 'react'
+import {SwiperProps, SwiperSlideProps} from "swiper/react";
+import { Swiper as SwiperType } from 'swiper';
 
 export type TSlide = {
   id: string | number
   content: ReactNode
-  slideProps?: Record<string, any>
+  slideProps?: SwiperSlideProps
 }
 
 export type TCustomSwiperProps = {
   slides: TSlide[]
-  swiperProps?: Record<string, any>
+  swiperProps?: SwiperProps
   navigation?: boolean
   pagination?: boolean
   autoplay?: boolean | { delay: number }
   className?: string
-  breakpoints?: Record<string, any>
+  breakpoints?:{ [key: number]: SwiperProps }
   allowTouchMove?: boolean
-  onSlideChange?: (swiper: any) => void
+  onSlideChange?: (swiper: SwiperType) => void;
 }
 
 export type TNavigationButtonsProps = {
