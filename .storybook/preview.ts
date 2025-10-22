@@ -4,7 +4,17 @@ import {WithReactHookForm} from "./decorators";
 const preview: Preview = {
   parameters: {
     backgrounds: {
-      default: 'dark'
+      default: 'dark',
+      values: [
+        {
+          name: 'dark',
+          value: '#000000',
+        },
+        {
+          name: 'light',
+          value: '#ffffff',
+        },
+      ],
     },
     controls: {
       matchers: {
