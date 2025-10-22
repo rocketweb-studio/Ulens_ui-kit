@@ -1,0 +1,7 @@
+@use '../../styles/_colors' as colors;
+
+.card {
+  border-radius: 2px;
+  border: 1px solid colors.color(dark, 300);
+  background-color: colors.color(dark, 500);
+}
