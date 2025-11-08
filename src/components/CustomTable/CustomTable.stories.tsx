@@ -33,7 +33,7 @@ const userColumns: Column<User>[] = [
         key: 'status',
         title: 'Status',
         width: '100px',
-        render: (value: any, row: User) => (
+        render: (value: any) => (
             <span style={{
                 color: value === 'active' ? '#4CAF50' : '#F44336',
                 fontWeight: 'bold'
@@ -134,7 +134,7 @@ export const CustomRendering: Story = {
                 key: 'status',
                 title: 'Actions',
                 width: '120px',
-                render: (value: any, row: User) => (
+                render: (value: any) => (
                     <button
                         style={{
                             padding: '4px 8px',
@@ -153,53 +153,6 @@ export const CustomRendering: Story = {
     },
 };
 
-// Дополнительные примеры с другими типами данных
-interface Product {
-    id: number;
-    name: string;
-    category: string;
-    price: number;
-    inStock: boolean;
-}
-
-const mockProducts: Product[] = [
-    { id: 1, name: 'Laptop', category: 'Electronics', price: 999.99, inStock: true },
-    { id: 2, name: 'Desk Chair', category: 'Furniture', price: 199.99, inStock: true },
-    { id: 3, name: 'Coffee Mug', category: 'Kitchen', price: 12.99, inStock: false },
-];
-
-const productColumns: Column<Product>[] = [
-    { key: 'id', title: 'ID', width: '60px', sortable: true },
-    { key: 'name', title: 'Product Name', width: '150px', sortable: true },
-    { key: 'category', title: 'Category', width: '120px', sortable: true },
-    {
-        key: 'price',
-        title: 'Price',
-        width: '100px',
-        sortable: true,
-        render: (value: any) => `$${Number(value).toFixed(2)}`
-    },
-    {
-        key: 'inStock',
-        title: 'Stock',
-        width: '100px',
-        render: (value: any) => (
-            <span style={{
-                color: value ? '#4CAF50' : '#F44336',
-                fontWeight: 'bold'
-            }}>
-        {value ? 'In Stock' : 'Out of Stock'}
-      </span>
-        )
-    },
-];
-
-export const ProductsTable: Story = {
-    args: {
-        data: mockProducts,
-        columns: productColumns,
-    },
-};
 
 // Сторисы с рендер функциями
 export const AllStates = {
