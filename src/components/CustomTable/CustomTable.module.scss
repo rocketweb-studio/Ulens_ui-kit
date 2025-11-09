@@ -1,0 +1,68 @@
+@use '../../styles/_colors' as colors;
+@use '../../styles/_typography' as typography;
+
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid colors.color(dark, 500);
+}
+
+.header {
+  @include typography.bold_text_14;
+  font-weight: 600;
+  background-color: colors.color(dark, 500);
+  color: colors.color(light, 100);
+  position: relative;
+
+  &.sortable {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sortIcons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sortIcon {
+  font-size: 10px;
+  color: colors.color(light, 300);
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  line-height: 1;
+
+  &.active {
+    opacity: 1;
+    color: colors.color(accent, 500);
+  }
+}
+
+.cell {
+  padding: 12px 24px;
+  text-align: left;
+}
+
+.row {
+  @include typography.small_text;
+  color: colors.color(light, 100);
+  background-color: rgba(0, 0, 0, 0);
+  border-bottom: 1px solid colors.color(dark, 500);
+}
+
+.container {
+  overflow-x: auto;
+}
+
+.paginationWrapper {
+  margin: 36px 0 0 0;
+}

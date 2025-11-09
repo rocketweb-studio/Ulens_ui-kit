@@ -9,7 +9,7 @@ type DropdownProps = {
   title?: string;
   style?: object;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    propsValue?: string | null;
+  propsValue?: string | null;
 
 }
 
@@ -29,7 +29,7 @@ export const Select = ({
 
   const handleSelect = (option: string) => {
     setSelected(option);
-      setInpVal(option);
+    setInpVal(option);
     setIsOpen(false);
     if (onChange) {
       onChange({target: {value: option}} as React.ChangeEvent<HTMLInputElement>)
