@@ -47,14 +47,31 @@ export const CustomTable = <T extends Record<string, any>>({
                                                                columns,
                                                                className = '',
                                                                paginated = false,
+                                                               // Новые пропсы для внешнего управления пагинацией
+                                                               currentPage: externalCurrentPage,
+                                                               onPageChange: externalOnPageChange,
+                                                               pageSize: externalPageSize,
+                                                               onPageSizeChange: externalOnPageSizeChange,
                                                            }: CustomTableProps<T>) => {
-    const [currentPage, setCurrentPage] = useState(1)
-    const [currentPageSize, setCurrentPageSize] = useState(10)
-    const [paginatedData, setPaginatedData] = useState<T[]>([])
+    const [internalCurrentPage, setInternalCurrentPage] = useState(1)
+    const [internalPageSize, setInternalPageSize] = useState(10)
+
     const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null)
     const [sortedData, setSortedData] = useState<T[]>(data)
 
-    // Сортировка данных
+    const isExternallyControlled = externalCurrentPage !== undefined &&
+        externalOnPageChange !== undefined &&
+        externalPageSize !== undefined &&
+        externalOnPageSizeChange !== undefined
+
+    const currentPage = isExternallyControlled ? externalCurrentPage! : internalCurrentPage
+    const currentPageSize = isExternallyControlled ? externalPageSize! : internalPageSize
+
+    const paginatedData = sortedData.slice(
+        (currentPage - 1) * currentPageSize,
+        currentPage * currentPageSize
+    )
+
     useEffect(() => {
         if (!sortConfig) {
             setSortedData(data)
@@ -77,13 +94,6 @@ export const CustomTable = <T extends Record<string, any>>({
         setSortedData(sorted)
     }, [data, sortConfig])
 
-    // Пагинация отсортированных данных
-    useEffect(() => {
-        const startIndex = (currentPage - 1) * currentPageSize
-        const endIndex = startIndex + currentPageSize
-        setPaginatedData(sortedData.slice(startIndex, endIndex))
-    }, [sortedData, currentPage, currentPageSize])
-
     const handleSort = (key: keyof T) => {
         let direction: 'asc' | 'desc' = 'asc'
 
@@ -97,12 +107,24 @@ export const CustomTable = <T extends Record<string, any>>({
         }
 
         setSortConfig({ key, direction })
-        setCurrentPage(1) // Сбрасываем на первую страницу при сортировке
+
+        if (isExternallyControlled) {
+            externalOnPageChange!(1, currentPageSize)
+        } else {
+            setInternalCurrentPage(1)
+        }
     }
 
     const handlePageChange = ({ page, pageSize }: { page: number; pageSize: number }) => {
-        setCurrentPage(page)
-        setCurrentPageSize(pageSize)
+        if (isExternallyControlled) {
+            externalOnPageChange!(page, pageSize)
+            if (externalOnPageSizeChange) {
+                externalOnPageSizeChange(pageSize)
+            }
+        } else {
+            setInternalCurrentPage(page)
+            setInternalPageSize(pageSize)
+        }
     }
 
     const getSortDirection = (key: keyof T): 'asc' | 'desc' | null => {
