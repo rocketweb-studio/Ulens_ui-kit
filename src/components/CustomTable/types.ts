@@ -13,6 +13,10 @@ export type CustomTableProps<T = Record<string, any>> = {
   columns: Column<T>[]
   className?: string
   paginated?: boolean
+  currentPage?: number
+  onPageChange?: (page: number, pageSize: number) => void
+  pageSize?: number
+  onPageSizeChange?: (pageSize: number) => void
 }
 
 export type TableCellProps = {
