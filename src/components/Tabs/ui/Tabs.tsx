@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import {useState} from "react";
 
 type Props = {
-  tabsSettings:  Array<{ title: string, href?: string }>
-  openActiveTab:(active:string) => string
+  tabsSettings:{ title: string, href?: string }[]
+  openActiveTab?:(active:string) => void
 }
 
 export const Tabs = ({ tabsSettings,openActiveTab }: Props) => {
@@ -15,7 +15,9 @@ export const Tabs = ({ tabsSettings,openActiveTab }: Props) => {
 
   const handleClick = (active:string,href?: string) => {
       setActiveTab(active)
-      openActiveTab(active)
+      if(openActiveTab){
+          openActiveTab(active)
+      }
     if (href && !active) {
       navigate(href)
     }
