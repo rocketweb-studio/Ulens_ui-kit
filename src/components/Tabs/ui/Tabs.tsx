@@ -49,3 +49,5 @@ export const Tabs = ({ tabsSettings,openActiveTab }: Props) => {
       </FlexContainer>
           )
 }
+
+export default Tabs
