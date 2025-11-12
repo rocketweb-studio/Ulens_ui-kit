@@ -4,7 +4,7 @@ import { FlexContainer } from "../../FlexContainer"
 import { useNavigate } from 'react-router-dom'
 import {useState} from "react";
 
-type Props = {
+export type Props = {
   tabsSettings:{ title: string, href?: string }[]
   openActiveTab?:(active:string) => void
 }
@@ -50,4 +50,3 @@ export const Tabs = ({ tabsSettings,openActiveTab }: Props) => {
           )
 }
 
-export default Tabs
