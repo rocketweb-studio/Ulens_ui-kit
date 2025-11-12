@@ -16,7 +16,6 @@
 
   &:focus {
     outline: none;
-    border: 2px solid colors.color(accent, 700);
     border-radius: 2px;
   }
 
@@ -28,6 +27,8 @@
 
 .activeLink{
   color: colors.color(accent, 500);
+  border-bottom: 2px solid colors.color(accent, 700);
+
 }
 
 
