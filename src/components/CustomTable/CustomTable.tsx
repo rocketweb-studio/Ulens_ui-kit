@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import {useState} from 'react'
 import s from './CustomTable.module.scss'
-import {CustomTableProps, TableCellProps, SortConfig} from "./types";
+import {CustomTableProps, SortConfig, TableCellProps} from "./types";
 import {Pagination} from "../Pagination";
 
 const TableCell = ({ children, className = '', style }: TableCellProps) => (
@@ -55,44 +55,36 @@ export const CustomTable = <T extends Record<string, any>>({
                                                            }: CustomTableProps<T>) => {
     const [internalCurrentPage, setInternalCurrentPage] = useState(1)
     const [internalPageSize, setInternalPageSize] = useState(10)
-
     const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null)
-    const [sortedData, setSortedData] = useState<T[]>(data)
 
     const isExternallyControlled = externalCurrentPage !== undefined &&
         externalOnPageChange !== undefined &&
-        externalPageSize !== undefined &&
-        externalOnPageSizeChange !== undefined
+        externalPageSize !== undefined
 
     const currentPage = isExternallyControlled ? externalCurrentPage! : internalCurrentPage
     const currentPageSize = isExternallyControlled ? externalPageSize! : internalPageSize
 
-    const paginatedData = sortedData.slice(
-        (currentPage - 1) * currentPageSize,
-        currentPage * currentPageSize
-    )
+    // Сортируем данные только если есть конфигурация сортировки
+    const sortedData = sortConfig ? [...data].sort((a, b) => {
+        const aValue = a[sortConfig.key as keyof T]
+        const bValue = b[sortConfig.key as keyof T]
 
-    useEffect(() => {
-        if (!sortConfig) {
-            setSortedData(data)
-            return
+        if (aValue === bValue) return 0
+
+        if (sortConfig.direction === 'asc') {
+            return aValue < bValue ? -1 : 1
+        } else {
+            return aValue > bValue ? -1 : 1
         }
+    }) : data
 
-        const sorted = [...data].sort((a, b) => {
-            const aValue = a[sortConfig.key as keyof T]
-            const bValue = b[sortConfig.key as keyof T]
-
-            if (aValue === bValue) return 0
-
-            if (sortConfig.direction === 'asc') {
-                return aValue < bValue ? -1 : 1
-            } else {
-                return aValue > bValue ? -1 : 1
-            }
-        })
-
-        setSortedData(sorted)
-    }, [data, sortConfig])
+    // Для внешней пагинации используем все данные, для внутренней - слайсим
+    const displayData = isExternallyControlled ?
+        sortedData :
+        sortedData.slice(
+            (currentPage - 1) * currentPageSize,
+            currentPage * currentPageSize
+        )
 
     const handleSort = (key: keyof T) => {
         let direction: 'asc' | 'desc' = 'asc'
@@ -108,8 +100,9 @@ export const CustomTable = <T extends Record<string, any>>({
 
         setSortConfig({ key, direction })
 
+        // При сортировке сбрасываем на первую страницу
         if (isExternallyControlled) {
-            externalOnPageChange!(1, currentPageSize)
+            externalOnPageChange(1, currentPageSize)
         } else {
             setInternalCurrentPage(1)
         }
@@ -117,7 +110,7 @@ export const CustomTable = <T extends Record<string, any>>({
 
     const handlePageChange = ({ page, pageSize }: { page: number; pageSize: number }) => {
         if (isExternallyControlled) {
-            externalOnPageChange!(page, pageSize)
+            externalOnPageChange(page, pageSize)
             if (externalOnPageSizeChange) {
                 externalOnPageSizeChange(pageSize)
             }
@@ -153,7 +146,7 @@ export const CustomTable = <T extends Record<string, any>>({
                 </tr>
                 </thead>
                 <tbody>
-                {paginatedData.map((row, index) => (
+                {displayData.map((row, index) => (
                     <tr key={index} className={s.row}>
                         {columns.map((column) => (
                             <TableCell key={String(column.key)}>
@@ -172,6 +165,7 @@ export const CustomTable = <T extends Record<string, any>>({
                     <Pagination
                         onPageChange={handlePageChange}
                         elementCount={sortedData.length}
+                        pageSize={currentPageSize}
                     />
                 </div>
             )}
