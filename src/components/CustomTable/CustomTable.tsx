@@ -47,7 +47,6 @@ export const CustomTable = <T extends Record<string, any>>({
                                                                columns,
                                                                className = '',
                                                                paginated = false,
-                                                               // Новые пропсы для внешнего управления пагинацией
                                                                currentPage: externalCurrentPage,
                                                                onPageChange: externalOnPageChange,
                                                                pageSize: externalPageSize,
@@ -64,7 +63,6 @@ export const CustomTable = <T extends Record<string, any>>({
     const currentPage = isExternallyControlled ? externalCurrentPage! : internalCurrentPage
     const currentPageSize = isExternallyControlled ? externalPageSize! : internalPageSize
 
-    // Сортируем данные только если есть конфигурация сортировки
     const sortedData = sortConfig ? [...data].sort((a, b) => {
         const aValue = a[sortConfig.key as keyof T]
         const bValue = b[sortConfig.key as keyof T]
@@ -78,13 +76,16 @@ export const CustomTable = <T extends Record<string, any>>({
         }
     }) : data
 
-    // Для внешней пагинации используем все данные, для внутренней - слайсим
     const displayData = isExternallyControlled ?
-        sortedData :
+        data :
         sortedData.slice(
             (currentPage - 1) * currentPageSize,
             currentPage * currentPageSize
         )
+
+    const totalElementCount = isExternallyControlled ?
+        data.length :
+        sortedData.length
 
     const handleSort = (key: keyof T) => {
         let direction: 'asc' | 'desc' = 'asc'
@@ -164,8 +165,9 @@ export const CustomTable = <T extends Record<string, any>>({
                 <div className={s.paginationWrapper}>
                     <Pagination
                         onPageChange={handlePageChange}
-                        elementCount={sortedData.length}
+                        elementCount={totalElementCount}
                         pageSize={currentPageSize}
+                        currentPage={currentPage}
                     />
                 </div>
             )}
