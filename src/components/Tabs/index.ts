@@ -1,1 +1,1 @@
-export * from './ui/Tabs.tsx'
+export * from './ui/Tabs'

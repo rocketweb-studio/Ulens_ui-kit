@@ -51,6 +51,7 @@ export const CustomTable = <T extends Record<string, any>>({
                                                                onPageChange: externalOnPageChange,
                                                                pageSize: externalPageSize,
                                                                onPageSizeChange: externalOnPageSizeChange,
+                                                               elementCount: externalElementCount,
                                                            }: CustomTableProps<T>) => {
     const [internalCurrentPage, setInternalCurrentPage] = useState(1)
     const [internalPageSize, setInternalPageSize] = useState(10)
@@ -59,6 +60,8 @@ export const CustomTable = <T extends Record<string, any>>({
     const isExternallyControlled = externalCurrentPage !== undefined &&
         externalOnPageChange !== undefined &&
         externalPageSize !== undefined
+
+
 
     const currentPage = isExternallyControlled ? externalCurrentPage! : internalCurrentPage
     const currentPageSize = isExternallyControlled ? externalPageSize! : internalPageSize
@@ -84,7 +87,7 @@ export const CustomTable = <T extends Record<string, any>>({
         )
 
     const totalElementCount = isExternallyControlled ?
-        data.length :
+        (externalElementCount !== undefined ? externalElementCount : data.length) :
         sortedData.length
 
     const handleSort = (key: keyof T) => {
