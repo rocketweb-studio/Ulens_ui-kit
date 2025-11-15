@@ -15,31 +15,74 @@ const TableHeader = ({
                          style,
                          sortable,
                          sortDirection,
-                         onSort
+                         onSort,
+                         onSortAsc,
+                         onSortDesc
                      }: TableCellProps & {
     sortable?: boolean;
     sortDirection?: 'asc' | 'desc' | null;
     onSort?: () => void;
-}) => (
-    <th
-        className={`${s.cell} ${s.header} ${className} ${sortable ? s.sortable : ''}`}
-        style={style}
-        onClick={sortable ? onSort : undefined}
-    >
-        <div className={s.headerContent}>
-            {children}
-            {sortable && (
-                <div className={s.sortIcons}>
-          <span className={`${s.sortIcon} ${sortDirection === 'asc' ? s.active : ''}`}>
-            ▲
-          </span>
-                    <span className={`${s.sortIcon} ${sortDirection === 'desc' ? s.active : ''}`}>
-            ▼
-          </span>
-                </div>
-            )}
-        </div>
-    </th>
+    onSortAsc?: () => void;
+    onSortDesc?: () => void;
+}) => {
+    const handleSortClick = () => {
+        if (!sortable) return;
+
+        if (onSortAsc && onSortDesc) {
+            return
+        }
+
+        onSort?.();
+    };
+
+    const handleIconClick = (direction: 'asc' | 'desc', e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!sortable) return;
+
+        if (direction === 'asc') {
+            onSortAsc?.();
+        } else {
+            onSortDesc?.();
+        }
+    };
+
+    return (
+        <th
+            className={`${s.cell} ${s.header} ${className} ${sortable ? s.sortable : ''}`}
+            style={style}
+            onClick={handleSortClick}
+        >
+            <div className={s.headerContent}>
+                {children}
+                {sortable && (
+                    <div className={s.sortIcons}>
+                        <span
+                            className={`${s.sortIcon} ${sortDirection === 'asc' ? s.active : ''} ${onSortAsc ? s.clickable : ''}`}
+                            onClick={(e) => handleIconClick('asc', e)}
+                        >
+                            ▲
+                        </span>
+                        <span
+                            className={`${s.sortIcon} ${sortDirection === 'desc' ? s.active : ''} ${onSortDesc ? s.clickable : ''}`}
+                            onClick={(e) => handleIconClick('desc', e)}
+                        >
+                            ▼
+                        </span>
+                    </div>
+                )}
+            </div>
+        </th>
+    );
+}
+
+const TableLoading = ({ colSpan }: { colSpan: number }) => (
+    <tr className={s.loadingRow}>
+        <td colSpan={colSpan} className={s.loadingCell}>
+            <div className={s.loadingContent}>
+                Loading...
+            </div>
+        </td>
+    </tr>
 )
 
 export const CustomTable = <T extends Record<string, any>>({
@@ -52,23 +95,27 @@ export const CustomTable = <T extends Record<string, any>>({
                                                                pageSize: externalPageSize,
                                                                onPageSizeChange: externalOnPageSizeChange,
                                                                elementCount: externalElementCount,
+                                                               loading = false,
+                                                               sortConfig: externalSortConfig,
+                                                               onSortChange,
                                                            }: CustomTableProps<T>) => {
     const [internalCurrentPage, setInternalCurrentPage] = useState(1)
     const [internalPageSize, setInternalPageSize] = useState(10)
-    const [sortConfig, setSortConfig] = useState<SortConfig<T> | null>(null)
+    const [internalSortConfig, setInternalSortConfig] = useState<SortConfig<T> | null>(null)
 
     const isExternallyControlled = externalCurrentPage !== undefined &&
         externalOnPageChange !== undefined &&
         externalPageSize !== undefined
 
-
+    const isSortExternallyControlled = externalSortConfig !== undefined && onSortChange !== undefined
 
     const currentPage = isExternallyControlled ? externalCurrentPage! : internalCurrentPage
     const currentPageSize = isExternallyControlled ? externalPageSize! : internalPageSize
+    const sortConfig = isSortExternallyControlled ? externalSortConfig : internalSortConfig
 
     const sortedData = sortConfig ? [...data].sort((a, b) => {
-        const aValue = a[sortConfig.key as keyof T]
-        const bValue = b[sortConfig.key as keyof T]
+        const aValue = a[sortConfig.key]
+        const bValue = b[sortConfig.key]
 
         if (aValue === bValue) return 0
 
@@ -90,21 +137,38 @@ export const CustomTable = <T extends Record<string, any>>({
         (externalElementCount !== undefined ? externalElementCount : data.length) :
         sortedData.length
 
-    const handleSort = (key: keyof T) => {
-        let direction: 'asc' | 'desc' = 'asc'
+    const handleSort = (key: keyof T, direction?: 'asc' | 'desc') => {
+        if (loading) return;
 
-        if (sortConfig && sortConfig.key === key) {
+        let newDirection: 'asc' | 'desc' = direction || 'asc';
+
+        if (!direction && sortConfig && sortConfig.key === key) {
             if (sortConfig.direction === 'asc') {
-                direction = 'desc'
+                newDirection = 'desc'
             } else if (sortConfig.direction === 'desc') {
-                setSortConfig(null)
+                if (isSortExternallyControlled) {
+                    onSortChange?.(null, key)
+                } else {
+                    setInternalSortConfig(null)
+                }
+
+                if (isExternallyControlled) {
+                    externalOnPageChange(1, currentPageSize)
+                } else {
+                    setInternalCurrentPage(1)
+                }
                 return
             }
         }
 
-        setSortConfig({ key, direction })
+        const newSortConfig = { key, direction: newDirection }
 
-        // При сортировке сбрасываем на первую страницу
+        if (isSortExternallyControlled) {
+            onSortChange?.(newSortConfig, key)
+        } else {
+            setInternalSortConfig(newSortConfig)
+        }
+
         if (isExternallyControlled) {
             externalOnPageChange(1, currentPageSize)
         } else {
@@ -112,7 +176,17 @@ export const CustomTable = <T extends Record<string, any>>({
         }
     }
 
+    const handleSortAsc = (key: keyof T) => {
+        handleSort(key, 'asc')
+    }
+
+    const handleSortDesc = (key: keyof T) => {
+        handleSort(key, 'desc')
+    }
+
     const handlePageChange = ({ page, pageSize }: { page: number; pageSize: number }) => {
+        if (loading) return;
+
         if (isExternallyControlled) {
             externalOnPageChange(page, pageSize)
             if (externalOnPageSizeChange) {
@@ -132,7 +206,7 @@ export const CustomTable = <T extends Record<string, any>>({
     }
 
     return (
-        <div className={`${s.container} ${className}`}>
+        <div className={`${s.container} ${className} ${loading ? s.loading : ''}`}>
             <table className={s.table}>
                 <thead>
                 <tr>
@@ -140,9 +214,11 @@ export const CustomTable = <T extends Record<string, any>>({
                         <TableHeader
                             key={String(column.key)}
                             style={{ width: column.width }}
-                            sortable={column.sortable}
+                            sortable={column.sortable && !loading}
                             sortDirection={getSortDirection(column.key)}
                             onSort={() => handleSort(column.key)}
+                            onSortAsc={column.sortable ? () => handleSortAsc(column.key) : undefined}
+                            onSortDesc={column.sortable ? () => handleSortDesc(column.key) : undefined}
                         >
                             {column.title}
                         </TableHeader>
@@ -150,18 +226,22 @@ export const CustomTable = <T extends Record<string, any>>({
                 </tr>
                 </thead>
                 <tbody>
-                {displayData.map((row, index) => (
-                    <tr key={index} className={s.row}>
-                        {columns.map((column) => (
-                            <TableCell key={String(column.key)}>
-                                {column.render
-                                    ? column.render(row[column.key as keyof T], row)
-                                    : String(row[column.key as keyof T])
-                                }
-                            </TableCell>
-                        ))}
-                    </tr>
-                ))}
+                {loading ? (
+                    <TableLoading colSpan={columns.length} />
+                ) : (
+                    displayData.map((row, index) => (
+                        <tr key={index} className={s.row}>
+                            {columns.map((column) => (
+                                <TableCell key={String(column.key)}>
+                                    {column.render
+                                        ? column.render(row[column.key], row)
+                                        : String(row[column.key])
+                                    }
+                                </TableCell>
+                            ))}
+                        </tr>
+                    ))
+                )}
                 </tbody>
             </table>
             {paginated && (
@@ -171,6 +251,7 @@ export const CustomTable = <T extends Record<string, any>>({
                         elementCount={totalElementCount}
                         pageSize={currentPageSize}
                         currentPage={currentPage}
+                        disabled={loading}
                     />
                 </div>
             )}

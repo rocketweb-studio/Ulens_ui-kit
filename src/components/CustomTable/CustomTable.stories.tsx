@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CustomTable } from './CustomTable.tsx';
 import { Column } from './types';
@@ -81,11 +81,15 @@ const meta = {
         paginated: {
             control: 'boolean',
         },
+        loading: {
+            control: 'boolean',
+        },
     },
     args: {
         data: mockUsers,
         columns: userColumns,
         paginated: false,
+        loading: false,
     },
 } satisfies Meta<typeof CustomTable<User>>;
 
@@ -125,6 +129,400 @@ export const SingleItem: Story = {
         data: [mockUsers[0]],
         columns: userColumns,
     },
+};
+
+// Новые сторисы с loading состоянием
+export const LoadingState: Story = {
+    args: {
+        data: mockUsers.slice(0, 5),
+        columns: userColumns,
+        loading: true,
+    },
+};
+
+export const LoadingWithPagination: Story = {
+    args: {
+        data: mockUsers,
+        columns: userColumns,
+        paginated: true,
+        loading: true,
+    },
+};
+
+export const LoadingEmptyTable: Story = {
+    args: {
+        data: [],
+        columns: userColumns,
+        loading: true,
+    },
+};
+
+// Интерактивная демонстрация загрузки
+export const InteractiveLoading: Story = {
+    render: () => {
+        const [loading, setLoading] = useState(false);
+        const [data, setData] = useState<User[]>(mockUsers.slice(0, 3));
+
+        const simulateLoading = () => {
+            setLoading(true);
+            setTimeout(() => {
+                setData(mockUsers.slice(0, 3));
+                setLoading(false);
+            }, 2000);
+        };
+
+        const simulateLoadingWithNewData = () => {
+            setLoading(true);
+            setTimeout(() => {
+                // Перемешиваем данные для демонстрации
+                const shuffled = [...mockUsers]
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 5);
+                setData(shuffled);
+                setLoading(false);
+            }, 2000);
+        };
+
+        return (
+            <div>
+                <div style={{
+                    marginBottom: '16px',
+                    padding: '12px',
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '4px',
+                    display: 'flex',
+                    gap: '12px',
+                    flexWrap: 'wrap'
+                }}>
+                    <button
+                        onClick={simulateLoading}
+                        style={{
+                            padding: '8px 16px',
+                            backgroundColor: '#2196F3',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Загрузить текущие данные
+                    </button>
+                    <button
+                        onClick={simulateLoadingWithNewData}
+                        style={{
+                            padding: '8px 16px',
+                            backgroundColor: '#4CAF50',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Загрузить новые данные
+                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: loading ? '#FFC107' : '#4CAF50'
+                        }} />
+                        <span>{loading ? 'Загрузка...' : 'Готово'}</span>
+                    </div>
+                </div>
+
+                <CustomTable<User>
+                    data={data}
+                    columns={userColumns}
+                    loading={loading}
+                />
+            </div>
+        );
+    },
+};
+
+// Загрузка с пагинацией
+export const LoadingWithExternalPagination: Story = {
+    render: () => {
+        const [currentPage, setCurrentPage] = useState(1);
+        const [pageSize, setPageSize] = useState(3);
+        const [loading, setLoading] = useState(false);
+        const [data, setData] = useState<User[]>(mockUsers.slice(0, 9));
+
+        const handlePageChange = (page: number, newPageSize: number) => {
+            if (loading) return;
+
+            setLoading(true);
+            setCurrentPage(page);
+            setPageSize(newPageSize);
+
+            // Имитация загрузки данных с сервера
+            setTimeout(() => {
+                const startIndex = (page - 1) * newPageSize;
+                const endIndex = startIndex + newPageSize;
+                const newData = mockUsers.slice(startIndex, endIndex);
+                setData(newData);
+                setLoading(false);
+            }, 1000);
+        };
+
+        return (
+            <div>
+                <div style={{
+                    marginBottom: '16px',
+                    padding: '12px',
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '4px',
+                }}>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                        <div>
+                            <h4 style={{ margin: 0 }}>Внешняя пагинация с загрузкой</h4>
+                            <div style={{ fontSize: '14px', color: '#666' }}>
+                                При смене страницы имитируется загрузка данных
+                            </div>
+                        </div>
+                        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{
+                                width: '12px',
+                                height: '12px',
+                                borderRadius: '50%',
+                                backgroundColor: loading ? '#FFC107' : '#4CAF50',
+                                animation: loading ? 'pulse 1.5s infinite' : 'none'
+                            }} />
+                            <span>{loading ? 'Загрузка данных...' : 'Готово'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <CustomTable<User>
+                    data={data}
+                    columns={userColumns}
+                    paginated={true}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                    pageSize={pageSize}
+                    onPageSizeChange={setPageSize}
+                    loading={loading}
+                />
+
+                <style>{`
+                    @keyframes pulse {
+                        0% { opacity: 1; }
+                        50% { opacity: 0.5; }
+                        100% { opacity: 1; }
+                    }
+                `}</style>
+            </div>
+        );
+    },
+};
+
+// Реалистичный пример с фильтрацией и загрузкой
+export const RealWorldExample: Story = {
+    render: () => {
+        const [currentPage, setCurrentPage] = useState(1);
+        const [pageSize, setPageSize] = useState(4);
+        const [loading, setLoading] = useState(false);
+        const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+        const [data, setData] = useState<User[]>(mockUsers);
+
+        // Функция для имитации API запроса
+        const fetchData = async (filter: string, page: number, size: number) => {
+            setLoading(true);
+
+            // Имитация задержки сети
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            let filteredData = mockUsers;
+
+            if (filter !== 'all') {
+                filteredData = mockUsers.filter(user => user.status === filter);
+            }
+
+            // В реальном приложении здесь был бы API запрос
+            const startIndex = (page - 1) * size;
+            const endIndex = startIndex + size;
+            const result = filteredData.slice(startIndex, endIndex);
+
+            setData(result);
+            setLoading(false);
+            return result;
+        };
+
+        const handleFilterChange = async (newFilter: 'all' | 'active' | 'inactive') => {
+            setStatusFilter(newFilter);
+            setCurrentPage(1);
+            await fetchData(newFilter, 1, pageSize);
+        };
+
+        const handlePageChange = async (page: number, newPageSize: number) => {
+            setCurrentPage(page);
+            setPageSize(newPageSize);
+            await fetchData(statusFilter, page, newPageSize);
+        };
+
+        // Загрузка初始数据
+        useEffect(() => {
+            fetchData(statusFilter, currentPage, pageSize);
+        }, []);
+
+        return (
+            <div>
+                <div style={{
+                    marginBottom: '16px',
+                    padding: '16px',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '6px',
+                    border: '1px solid #e9ecef'
+                }}>
+                    <h4 style={{ margin: '0 0 12px 0' }}>Реалистичный пример</h4>
+
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>Статус:</label>
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => handleFilterChange(e.target.value as 'all' | 'active' | 'inactive')}
+                                style={{
+                                    padding: '6px 8px',
+                                    width: '120px',
+                                    opacity: loading ? 0.6 : 1
+                                }}
+                                disabled={loading}
+                            >
+                                <option value="all">Все</option>
+                                <option value="active">Активные</option>
+                                <option value="inactive">Неактивные</option>
+                            </select>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{
+                                width: '10px',
+                                height: '10px',
+                                borderRadius: '50%',
+                                backgroundColor: loading ? '#FFC107' : '#4CAF50',
+                                animation: loading ? 'spin 1s linear infinite' : 'none'
+                            }} />
+                            <span style={{ fontSize: '14px' }}>
+                                {loading ? 'Загрузка...' : 'Готово'}
+                            </span>
+                        </div>
+
+                        <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+                            <div style={{ fontSize: '14px' }}>Страница: <strong>{currentPage}</strong></div>
+                            <div style={{ fontSize: '14px' }}>Размер: <strong>{pageSize}</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <CustomTable<User>
+                    data={data}
+                    columns={userColumns}
+                    paginated={true}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                    pageSize={pageSize}
+                    onPageSizeChange={setPageSize}
+                    loading={loading}
+                />
+
+                <style>{`
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `}</style>
+            </div>
+        );
+    },
+};
+
+// Демонстрация всех состояний включая loading
+export const AllStates: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4>Базовая таблица</h4>
+                <CustomTable<User>
+                    data={mockUsers.slice(0, 2)}
+                    columns={userColumns}
+                />
+            </div>
+            <div>
+                <h4>С пагинацией</h4>
+                <CustomTable<User>
+                    data={mockUsers}
+                    columns={userColumns}
+                    paginated={true}
+                />
+            </div>
+            <div>
+                <h4>Пустая таблица</h4>
+                <CustomTable<User>
+                    data={[]}
+                    columns={userColumns}
+                />
+            </div>
+            <div>
+                <h4>Загрузка (с данными)</h4>
+                <CustomTable<User>
+                    data={mockUsers.slice(0, 3)}
+                    columns={userColumns}
+                    loading={true}
+                />
+            </div>
+            <div>
+                <h4>Загрузка (пустая таблица)</h4>
+                <CustomTable<User>
+                    data={[]}
+                    columns={userColumns}
+                    loading={true}
+                />
+            </div>
+            <div>
+                <h4>Загрузка с пагинацией</h4>
+                <CustomTable<User>
+                    data={mockUsers}
+                    columns={userColumns}
+                    paginated={true}
+                    loading={true}
+                />
+            </div>
+        </div>
+    ),
+};
+
+// Сторисы с рендер функциями (обновленные)
+export const SizeVariants: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+                <h4>Маленький набор данных</h4>
+                <CustomTable<User>
+                    data={mockUsers.slice(0, 2)}
+                    columns={userColumns.slice(0, 3)}
+                />
+            </div>
+            <div>
+                <h4>Большой набор данных с пагинацией</h4>
+                <CustomTable<User>
+                    data={[...mockUsers, ...mockUsers, ...mockUsers]}
+                    columns={userColumns}
+                    paginated={true}
+                />
+            </div>
+            <div>
+                <h4>Загрузка большого набора данных</h4>
+                <CustomTable<User>
+                    data={[...mockUsers, ...mockUsers, ...mockUsers]}
+                    columns={userColumns}
+                    paginated={true}
+                    loading={true}
+                />
+            </div>
+        </div>
+    ),
 };
 
 // Сторисы с кастомным рендерингом
@@ -474,56 +872,4 @@ export const ExternallyControlledAdvanced: Story = {
             </div>
         );
     },
-};
-
-// Сторисы с рендер функциями
-export const AllStates = {
-    render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div>
-                <h4>Базовая таблица</h4>
-                <CustomTable<User>
-                    data={mockUsers.slice(0, 2)}
-                    columns={userColumns}
-                />
-            </div>
-            <div>
-                <h4>С пагинацией</h4>
-                <CustomTable<User>
-                    data={mockUsers}
-                    columns={userColumns}
-                    paginated={true}
-                />
-            </div>
-            <div>
-                <h4>Пустая таблица</h4>
-                <CustomTable<User>
-                    data={[]}
-                    columns={userColumns}
-                />
-            </div>
-        </div>
-    ),
-};
-
-export const SizeVariants = {
-    render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-                <h4>Маленький набор данных</h4>
-                <CustomTable<User>
-                    data={mockUsers.slice(0, 2)}
-                    columns={userColumns.slice(0, 3)}
-                />
-            </div>
-            <div>
-                <h4>Большой набор данных с пагинацией</h4>
-                <CustomTable<User>
-                    data={[...mockUsers, ...mockUsers, ...mockUsers]}
-                    columns={userColumns}
-                    paginated={true}
-                />
-            </div>
-        </div>
-    ),
 };
