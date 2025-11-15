@@ -84,10 +84,6 @@
   color: colors.color(light, 100);
   background-color: rgba(0, 0, 0, 0);
   border-bottom: 1px solid colors.color(dark, 500);
-
-  &:hover {
-    background-color: colors.color(dark, 300);
-  }
 }
 
 .container {
@@ -113,12 +109,11 @@
 }
 
 .loadingContent {
+  @include typography.regular_text_14;
   display: flex;
   align-items: center;
   justify-content: center;
   color: colors.color(light, 300);
-  font-style: italic;
-  @include typography.regular_text_14;
 }
 
 .loadingContent::after {
