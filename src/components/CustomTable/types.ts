@@ -18,6 +18,9 @@ export type CustomTableProps<T = Record<string, any>> = {
   pageSize?: number
   onPageSizeChange?: (pageSize: number) => void
   elementCount?: number
+  loading?: boolean
+  sortConfig?: SortConfig<T> | null
+  onSortChange?: (sortConfig: SortConfig<T> | null, key: keyof T) => void
 }
 
 export type TableCellProps = {

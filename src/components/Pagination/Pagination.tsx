@@ -4,13 +4,13 @@ import {useEffect, useState} from "react";
 type Props = {
   onPageChange: ({page, pageSize}: { page: number; pageSize: number }) => void;
   elementCount: number;
-  // Добавляем пропсы для внешнего управления
   currentPage?: number;
   pageSize?: number;
   onPageSizeChange?: (pageSize: number) => void;
+  disabled?: boolean
 };
 
-export const Pagination = ({onPageChange, elementCount, currentPage, pageSize, onPageSizeChange}: Props) => {
+export const Pagination = ({onPageChange, elementCount, currentPage, pageSize, onPageSizeChange, disabled = false}: Props) => {
   const isControlled = currentPage !== undefined && pageSize !== undefined;
 
   const [internalPage, setInternalPage] = useState<number>(1)
@@ -83,11 +83,11 @@ export const Pagination = ({onPageChange, elementCount, currentPage, pageSize, o
   const pages = end >= start ? Array.from({length: end - start + 1}, (_, i) => start + i) : [];
 
   return (
-      <div className={s.paginationContainer}>
+      <div className={s.paginationContainer} >
         <button onClick={previousPageHandler}
-                className={`${s.arrow} ${actualPage === 1 ? s.arrowDisabled : ''}`}> {'<'} </button>
+                className={`${s.arrow} ${actualPage === 1 ? s.arrowDisabled : ''}`} disabled={disabled}> {'<'} </button>
 
-        <button onClick={() => setPageHandler(1)} className={`${actualPage === 1 ? s.active : ''}`}>1</button>
+        <button onClick={() => setPageHandler(1)} className={`${actualPage === 1 ? s.active : ''}`}  disabled={disabled}>1</button>
 
         {start > 2 && <span className={s.dot}>...</span>}
 
@@ -95,7 +95,7 @@ export const Pagination = ({onPageChange, elementCount, currentPage, pageSize, o
             <button
                 key={p}
                 onClick={() => setPageHandler(p)}
-                className={`${actualPage === p ? s.active : ''}`}>{p}</button>
+                className={`${actualPage === p ? s.active : ''}`}  disabled={disabled}>{p}</button>
         ))}
 
         {end < totalPage - 1 && <span className={s.dot}>...</span>}
@@ -104,13 +104,13 @@ export const Pagination = ({onPageChange, elementCount, currentPage, pageSize, o
                                   className={`${actualPage === totalPage ? s.active : ''}`}>{totalPage}</button>}
 
         <button onClick={nextPageHandler}
-                className={`${s.arrow} ${actualPage === totalPage ? s.arrowDisabled : ''}`}> {'>'} </button>
+                className={`${s.arrow} ${actualPage === totalPage ? s.arrowDisabled : ''}`}  disabled={disabled}> {'>'} </button>
 
         <div className={s.pageSizeContainer}>
           <span>Show</span>
           <select name='pageSize' value={actualPageSize} onChange={(e) => {
             setPageSizeHandler(Number(e.target.value))
-          }}>
+          }}  disabled={disabled}>
             <option value={10}>10</option>
             <option value={20}>20</option>
             <option value={30}>30</option>
