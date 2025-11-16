@@ -57,17 +57,14 @@
 
   &.clickable {
     cursor: pointer;
-    padding: 2px 1px;
     border-radius: 2px;
     opacity: 0.7;
 
     &:hover {
       opacity: 1;
-      background-color: rgba(colors.color(light, 100), 0.1);
-      color: colors.color(light, 100);
+      color: colors.color(dark, 100);
 
       &.active {
-        background-color: colors.color(accent, 500);
         color: colors.color(dark, 500);
       }
     }
