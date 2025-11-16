@@ -2,6 +2,7 @@ import {useState} from 'react'
 import s from './CustomTable.module.scss'
 import {CustomTableProps, SortConfig, TableCellProps} from "./types";
 import {Pagination} from "../Pagination";
+import {IconPolygon2, IconPolygon3} from "../../assets/icons/components";
 
 const TableCell = ({ children, className = '', style }: TableCellProps) => (
     <td className={`${s.cell} ${className}`} style={style}>
@@ -60,13 +61,13 @@ const TableHeader = ({
                             className={`${s.sortIcon} ${sortDirection === 'asc' ? s.active : ''} ${onSortAsc ? s.clickable : ''}`}
                             onClick={(e) => handleIconClick('asc', e)}
                         >
-                            ▲
+                            <IconPolygon2/>
                         </span>
                         <span
                             className={`${s.sortIcon} ${sortDirection === 'desc' ? s.active : ''} ${onSortDesc ? s.clickable : ''}`}
                             onClick={(e) => handleIconClick('desc', e)}
                         >
-                            ▼
+                            <IconPolygon3/>
                         </span>
                     </div>
                 )}
