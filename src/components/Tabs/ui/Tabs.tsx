@@ -1,6 +1,5 @@
-import { motion } from 'framer-motion'
 import s from './Tabs.module.scss'
-import { FlexContainer } from "../../FlexContainer"
+import {FlexContainer} from "../../FlexContainer"
 import {useState} from "react";
 
 export type TabsProps = {
@@ -29,17 +28,6 @@ export const Tabs = ({ tabsSettings,openActiveTab }: TabsProps) => {
               className={`${s.link} ${isActive? s.activeLink : ''}`}
           >
             {title}
-            {isActive && (
-                <motion.div
-                    layoutId="activeTab"
-                    className={s.activeIndicator}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 500,
-                      damping: 30,
-                    }}
-                />
-            )}
           </button>
         })}
       </FlexContainer>
