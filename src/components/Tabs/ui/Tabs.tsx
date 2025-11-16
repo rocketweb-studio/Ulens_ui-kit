@@ -2,14 +2,16 @@ import s from './Tabs.module.scss'
 import {FlexContainer} from "../../FlexContainer"
 
 export type TabsProps = {
-  tabsSettings:{ title: string, activeTabTitle:string, href?:string }[]
+    tabsSettings:{ title: string,   }[]
+    href?:string
+    activeTabTitle:string
 }
 
-export const Tabs = ({ tabsSettings }: TabsProps) => {
+export const Tabs = ({ tabsSettings,href,activeTabTitle }: TabsProps) => {
 
   return (
       <FlexContainer wrap justify={'center'}>
-        {tabsSettings.map(({ title,activeTabTitle,href }, index) => {
+        {tabsSettings.map(({ title }, index) => {
           const isActive = activeTabTitle === title
           return <a
               href={href||""}
