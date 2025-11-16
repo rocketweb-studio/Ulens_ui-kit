@@ -2,20 +2,19 @@
 @use '../../../styles/colors' as colors;
 
 
-.link {
+.link, .link:visited {
   @include typography.h3;
   display: flex;
   flex-grow: 1;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
-  border: none;
-  background: none;
+  position: relative;
   height: 36px;
   color: colors.color(dark, 100);
 
-  &:focus {
+  &:focus-visible {
     outline: none;
+    border: 2px solid colors.color(accent, 700);
     border-radius: 2px;
   }
 
@@ -25,12 +24,21 @@
   }
 }
 
-.activeLink{
+.activeLink, .activeLink:visited {
   color: colors.color(accent, 500);
-  border-bottom: 2px solid colors.color(accent, 700);
-
 }
 
+.link {
+  position: relative;
+  padding: 8px 16px;
+  font-weight: 500;
+  color: #888;
+  text-decoration: none;
+
+  &:hover {
+    color: #555;
+  }
+}
 
 
 
