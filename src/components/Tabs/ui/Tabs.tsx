@@ -1,36 +1,28 @@
 import s from './Tabs.module.scss'
 import {FlexContainer} from "../../FlexContainer"
-import {useState} from "react";
 
 export type TabsProps = {
-  tabsSettings:{ title: string }[]
-  openActiveTab?:(active:string) => void
+  tabsSettings:{ title: string, activeTabTitle:string, href?:string }[]
 }
 
-export const Tabs = ({ tabsSettings,openActiveTab }: TabsProps) => {
-  const [activeTab, setActiveTab] = useState<string>(tabsSettings[0].title)
-
-  const handleClick = (active:string) => {
-      setActiveTab(active)
-      if(openActiveTab){
-          openActiveTab(active)
-      }
-
-  }
+export const Tabs = ({ tabsSettings }: TabsProps) => {
 
   return (
       <FlexContainer wrap justify={'center'}>
-        {tabsSettings.map(({ title }, index) => {
-          const isActive = activeTab === title
-          return <button
+        {tabsSettings.map(({ title,activeTabTitle,href }, index) => {
+          const isActive = activeTabTitle === title
+          return <a
+              href={href||""}
               key={index}
-              onClick={() => handleClick(title)}
-              className={`${s.link} ${isActive? s.activeLink : ''}`}
+              className={`${s.link} ${isActive ? s.activeLink : ''}`}
+
           >
             {title}
-          </button>
+          </a>
         })}
       </FlexContainer>
-          )
-}
+  )}
+
+
+
 
